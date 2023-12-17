@@ -6,6 +6,8 @@ const shopRoutes = require('./routes/shop');
 const contactusRoutes = require('./routes/contactus');
 const successRoutes = require('./routes/success');
 
+const errorController = require('./controllers/error');
+
 const path = require('path');
 
 const app = express();
@@ -18,12 +20,10 @@ app.use(shopRoutes);
 
 app.use(contactusRoutes);
 
-app.use(successRoutes);
+app.use(successRoutes)
 
 app.use(express.static(path.join(__dirname,'public')));
 
-app.use( (req,res,next) => {
-    res.status(404).sendFile(path.join(__dirname,'views','404.html'));
-})
+app.use( errorController.errorPage);
 
 app.listen(3000);
