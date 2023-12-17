@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>registration form</title>
+    <style>
+        fieldset {
+            width:60%;
+            margin:0 auto;
+            background-color:white;
+        }
+        body {
+            background-image: url('back.jpg');
+        }
+        a {
+            
+            color:black;
+        }
+        div {
+            text-align:center;
+        }
+        .an  {
+           text-decoration: none; 
+           
+           margin: 0 1rem;
+           
+        }
+        #registerNow {
+            background-color: brown;
+            color:white;
+        }
+        
+    </style>
+    
+</head>
+<body>
+        <div>
+        <a href="#" class="an">Home</a>
+        <a href="#" class="an">Courses</a>
+        <a href="#" class="an">Hire With Us</a>
+        <a href="#" class="an">Pricing</a>
+        <a href="#" class="an" id="registerNow" >Register Now</a>
+    </div>
+        <fieldset>
+            <form  action="/success" onsubmit="onsignup(event)" method="POST">
+            <center><h2 style="color:rgb(245, 99, 9)"><strong>Book a call</strong></h2>
+            <p>book a call slot and our representative will call you within 1hr of selected time.</p></center>
+            <hr>
+            <label for="name" >Name:</label><br>
+            <input type="text" id="name" style="width:100%" placeholder="ex:praveen" required name="username">
+            <br>
+            <br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" style="width:100%" placeholder="ex:abc@gmail.com" name="email" required checked>
+            <br>
+            <br>
+            <label for="phone">Phone:</label>
+            <input type="tel" style="width:100%" id="phone" placeholder="ex:9999999999" name="mobile" required checked minlength="10">
+            <br>
+            <br>
+            <label for="time">Time for call:</label><br>
+            <input type="date"  id="date" style="width:49%" name="date">
+            <input type="time" id="time" style="width:49%" name="time">
+            <br>
+            <br>
+            <input type="submit" name="submit" value="GET A CALL" style="width:100%; background-color:rgb(231, 112, 14); color:white"> 
+        </fieldset>
+    </form>
+</body>
+</html>  
