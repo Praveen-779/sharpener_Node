@@ -6,4 +6,4 @@ const successPath = require('../controllers/contact');
 
 router.post('/success',successPath.success);
 
-module.exports = router;
+module.exports = router

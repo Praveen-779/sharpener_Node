@@ -6,4 +6,4 @@ const contactUsRouter = require('../controllers/contact');
 
 router.get('/contactus',contactUsRouter.contactUs);
 
-module.exports = router;
+module.exports = router

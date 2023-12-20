@@ -8,4 +8,6 @@ const listProductsController = require('../controllers/products');
 
 router.get('/',listProductsController.listProducts);
 
-module.exports = router;
+router.post('/',listProductsController.redirect);
+
+module.exports = router
