@@ -15,8 +15,10 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  const prodId = req.body.productId;
   const product = new Product(title, imageUrl, description, price);
   product.save();
+
   res.redirect('/');
 };
 
