@@ -36,7 +36,7 @@ module.exports = class Cart {
             })
         })
     }
-    static deleteCartById(id,price) {
+    static  deleteCartById(id,price) {
         fs.readFile(p,(err,filecontent) => {
             if(err) {
                 return;
