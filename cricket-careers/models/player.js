@@ -10,7 +10,11 @@ const Player = sequelize.define('player', {
         primaryKey: true
     },
 
-    name : Sequelize.STRING,
+    name : {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique : true
+    },
 
     dateofbirth : Sequelize.STRING,
 

@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(bodyParser.json({ extended: false }));
 
-app.use('/players',PlayerRoutes);
+app.use('/players', PlayerRoutes);
 
 sequelize
     .sync()

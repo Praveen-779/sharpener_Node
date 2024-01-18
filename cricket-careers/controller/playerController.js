@@ -40,3 +40,19 @@ exports.getData = (req,res,next) => {
         res.status(200).json({players : players})
     }).catch(err => console.log(err));
 }
+
+exports.getPlayerById = (req,res,next) => {
+    const id = req.params.id;
+    Player.findByPk(id)
+    .then(players => {
+        res.status(200).json({player : players});
+    })
+}
+
+exports.deletePlayer = (req,res,next) => {
+    const id = req.params.id;
+    Player.findByPk(id)
+    .then(player => {
+        player.destroy();
+    }).catch(err => console.log(err));
+}
