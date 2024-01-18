@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Carreers</title>
+</head>
+
+<body>
+    <h1>Player Information</h1><br><br>
+    <form onsubmit="addData(event)">
+        <label for="name">NAME : </label><br>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="dob">Date Of Birth : </label><br>
+        <input type="text" name="dob" id="dob"><br><br>
+        <label for="photo url">Photo Url :</label><br>
+        <input type="text" name="url" id="url"> <br><br>
+        <label for="birthplace">Birthplace</label><br>
+        <input type="text" name="birthplace" id="birthplace"><br><br>
+        <label for="caeer">career :</label><br>
+        <textarea id="career" name="career" rows="7" cols="50"></textarea><br><br>
+        <label for="matches">Number Of Matches : </label><br>
+        <input type="text" name="matches" id="matches"><br><br>
+        <label for="score">Score</label><br>
+        <input type="text" name="score" id="score"><br><br>
+        <label for="fifties">Fifties</label><br>
+        <input type="text" name="fifties" id="fifties"><br><br>
+        <label for="centuries">Centuries</label><br>
+        <input type="text" name="centuries" id="centuries"><br><br>
+        <label for="wickets">Wickets</label><br>
+        <input type="text" name="wickets" id="wickets"><br><br>
+        <label for="average">Average</label><br>
+        <input type="text" name="average" id="average"><br><br>
+        <button type="submit">Submit</button>
+        <br><br><br><br><br>
+    </form>
+    <input type="text" name="search" id="search">
+    <button type="submit" onclick="display()">Search</button>
+
+    <div id="display">
+        
+    </div>
+
+</body>
+
+</html>
+<script src="./index.js"></script>
+    
