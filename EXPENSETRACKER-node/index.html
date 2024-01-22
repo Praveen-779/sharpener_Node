@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>EXPENSE TRACKER</title>
+</head>
+<body>
+    <form onsubmit="addData(event)">
+        <label for="name">Enter Name</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="email">Enter Email</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Enter password</label><br>
+        <input type="text" name="password" id="password" required><br><br>
+        <button type="submit">SignUp</button>
+    </form>
+</body>
+<script>
+   async function addData(event) {
+    
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const obj = {
+            name : name,
+            email : email,
+            password : password
+        }
+
+        try {
+           const response =  await axios.post('http://localhost:3000/user/signup',obj)
+        }
+       catch(err) {
+        console.log(err);
+       }
+
+    }
+</script>
+</html>
