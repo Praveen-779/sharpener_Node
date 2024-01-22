@@ -32,10 +32,10 @@
         }
 
         try {
-           const response =  await axios.post('http://localhost:3000/user/signup',obj)
+           const response =  await axios.post('http://localhost:7000/user/signup',obj)
         }
        catch(err) {
-        console.log(err);
+        document.body.innerHTML += `<div style= " color:red;">${err}</div>`;
        }
 
     }
