@@ -17,4 +17,4 @@ sequelize
     .then(result => {
         app.listen(7000);
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err)) ;

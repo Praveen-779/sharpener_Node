@@ -16,7 +16,7 @@ const Expense = sequelize.define('expense', {
         type : Sequelize.STRING,
         unique : true,
         allowNull : false
-    } ,
+    },
     password : Sequelize.STRING
 })
 

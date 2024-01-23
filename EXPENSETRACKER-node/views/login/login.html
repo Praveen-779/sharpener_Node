@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Login</title>
 </head>
 <body>
-    <form >
+    <form onsubmit="login(event)">
         <label for="email">Enter Your Email</label><br>
         <input type="email" name="email" id="email"><br><br>
         <label for="password">Password</label><br>
-        <input type="text" name="password" id="password"><br><br>
+        <input type="password" name="password" id="password"><br><br>
         <button type="submit">Login</button>
     </form>
     <a href="./index.html">New User SignUp</a>
+
+    <div id="errorMessage" style="color: red;"></div>
 </body>
+<script src="./login.js">
+
+
+</script>
 </html>
