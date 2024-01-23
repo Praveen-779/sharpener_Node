@@ -5,12 +5,15 @@ const sequelize = require('./util/database');
 
 const app = express();
 
-const expenseRoutes = require('./routes/expenseRoutes');
+const userRoutes = require('./routes/user');
+const expenseRoutes = require('./routes/expense');
+
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/user', expenseRoutes);
+app.use('/user', userRoutes);
+app.use('/expense',expenseRoutes);
 
 sequelize
     .sync()
