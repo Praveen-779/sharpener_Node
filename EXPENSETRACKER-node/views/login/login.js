@@ -13,6 +13,6 @@ async function login(event) {
     }
     catch(err) {
         const errorDiv = document.getElementById('errorMessage');
-        errorDiv.innerHTML = `<div style="color : red;">${err.response.data.message}</div>`
+        errorDiv.innerHTML = `<div style="color : red;">${err}, message :  ${err.response.data.message}</div>`
     }
 }

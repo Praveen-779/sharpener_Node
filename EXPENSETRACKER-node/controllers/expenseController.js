@@ -1,4 +1,5 @@
 const Expense = require('../models/expense');
+const bcrypt = require('bcrypt');
 
 exports.postExpense = async (req, res, next) => {
     const name = req.body.name;
@@ -7,13 +8,16 @@ exports.postExpense = async (req, res, next) => {
 
     try {
         if (!name || !email || !password) {
-            return res.status(500).json({ err: 'Fill in all data' });
+            return res.status(500).json({ message: 'Fill in all data' });
         }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password,saltRounds);
 
         const response = await Expense.create({
             name: name,
             email: email,
-            password: password
+            password: hashedPassword
         });
 
         res.status(200).json({ response: response });
@@ -36,7 +40,8 @@ exports.postLogin = async (req,res,next) => {
         }
         
         if(user[0].email === email) {
-            if(user[0].password === password) {
+            const bcryptPassword = await bcrypt.compare(password,user[0].password);
+            if(bcryptPassword) {
                 res.status(200).json({message : 'user login in successfully'});
             }
             else {
