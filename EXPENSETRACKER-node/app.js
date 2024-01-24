@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
+const User = require('./models/user');
+const Expense = require('./models/expense');
 
 const app = express();
 
@@ -14,6 +16,9 @@ app.use(express.json());
 
 app.use('/user', userRoutes);
 app.use('/expense',expenseRoutes);
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 sequelize
     .sync()

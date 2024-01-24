@@ -5,4 +5,4 @@ const sequelize = new  Sequelize('expense-tracker','root','9972798543@Pr',{
     host: 'localhost'
 });
 
-module.exports = sequelize;
+module.exports =  sequelize;

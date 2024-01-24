@@ -21,7 +21,9 @@ async function addExpense(event) {
 
 async function displayExpense() {
     try {
-        const result = await axios.get('http://localhost:7000/expense/get-expense');
+        const token = localStorage.getItem('token');
+        console.log(token);
+        const result = await axios.get('http://localhost:7000/expense/get-expense',{headers : {'Authorization' : token}});
         const displayDiv = document.getElementById('display');
         displayDiv.innerHTML = '';
 

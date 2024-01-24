@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 
 exports.postExpense = async (req, res, next) => {
     const name = req.body.name;
@@ -10,7 +11,6 @@ exports.postExpense = async (req, res, next) => {
         if (!name || !email || !password) {
             return res.status(500).json({ message: 'Fill in all data' });
         }
-
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password,saltRounds);
 
@@ -25,6 +25,10 @@ exports.postExpense = async (req, res, next) => {
         res.status(403).json({ err: err });
     }
 };
+
+function generateToken(id) {
+    return jwt.sign({userId : id}, 'secretKey');
+}
 
 exports.postLogin = async (req,res,next) => {
     const email = req.body.email;
@@ -42,7 +46,7 @@ exports.postLogin = async (req,res,next) => {
         if(user[0].email === email) {
             const bcryptPassword = await bcrypt.compare(password,user[0].password);
             if(bcryptPassword) {
-                res.status(200).json({message : 'user login in successfully'});
+                res.status(200).json({message : 'user login in successfully',token : generateToken(user[0].id)});
             }
             else {
                 res.status(401).json({message : 'password incorrect'});
@@ -52,5 +56,4 @@ exports.postLogin = async (req,res,next) => {
         console.log(err);
         res.status(500).json({err : err});
     }
-    
 }

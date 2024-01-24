@@ -1,4 +1,5 @@
 const Expense = require('../models/expense');
+let currUser;
 
 exports.addExpense = async (req, res, next) => {
     const amount = req.body.amount;
@@ -6,7 +7,7 @@ exports.addExpense = async (req, res, next) => {
     const category = req.body.category;
 
     try {
-        const response = await Expense.create({
+        const response = await currUser.createExpense({
             amount : amount,
             description: description,
             category: category
@@ -19,7 +20,8 @@ exports.addExpense = async (req, res, next) => {
 
 exports.getExpenses = async (req,res,next) => {
     try {
-        const expenses = await Expense.findAll();
+        currUser = req.user;
+        const expenses = await currUser.getExpenses();
         return res.status(200).json({expenses : expenses});
     } catch(err) {
         return res.status(500).json({err});
@@ -29,8 +31,8 @@ exports.getExpenses = async (req,res,next) => {
 exports.deleteExpense = async (req,res,next) => {
     const id = req.params.id;
     try {
-        const response = await Expense.findByPk(id);
-        await response.destroy();
+        const expense = await Expense.findAll({where : {id : id, userId : currUser.id}});
+        await expense[0].destroy();
         return res.status(200).json({});
     } catch(err) {
         res.status(500).json({err});
