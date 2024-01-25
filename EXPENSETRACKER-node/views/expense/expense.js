@@ -1,4 +1,5 @@
 async function addExpense(event) {
+    const token = localStorage.getItem('token');
     event.preventDefault();
     const displayDiv = document.getElementById('display');
 
@@ -9,7 +10,7 @@ async function addExpense(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:7000/expense/add-expense', obj);
+        const response = await axios.post('http://localhost:7000/expense/add-expense', obj,{headers : {'Authorization' : token}});
     }
     catch (err) {
         console.log(err);
@@ -50,9 +51,10 @@ async function displayExpense() {
 }
 
 async function deleteExpense(id) {
+    const token = localStorage.getItem('token')
     console.log(id);
     try{
-        await axios.delete(`http://localhost:7000/expense/delete/${id}`);
+        await axios.delete(`http://localhost:7000/expense/delete/${id}`,{headers : {'Authorization' : token}});
         displayExpense();
 
     } catch(err) {
@@ -101,9 +103,45 @@ async function displayPremium() {
         const premiumMessage = document.createElement('p');
         premiumMessage.innerHTML = '<h3><strong>YOU ARE A PREMIUM USER!<strong><h3>';
         document.getElementById('premium').appendChild(premiumMessage);
+        
+        const showLeaderboardButton = document.createElement('button');
+        showLeaderboardButton.textContent = 'Show Leaderboard';
+        showLeaderboardButton.addEventListener('click',getLeaderboard);
+        document.getElementById('premium').appendChild(showLeaderboardButton);
+    }
+        
+        
     } 
+
+    async function getLeaderboard() {
+        try {
+            const token = localStorage.getItem('token');
+            console.log(token);
+            const response = await axios.get('http://localhost:7000/premium/leaderboard',{headers : {'Authorization' : token}});
+            const leaderBoardArray = response.data.leaderBoard;
+            displayLeaderBoard(leaderBoardArray);
+
+        } catch(err) {
+            console.log(err);
+        }
+    }
     
-}
+    function displayLeaderBoard(leaderBoardArray) {
+        const leaderboardDiv = document.getElementById('leaderboard');
+        console.log(leaderBoardArray);
+        leaderboardDiv.innerHTML = '';
+
+        leaderboardDiv.innerHTML = '<h1>LEADERBOARD</h1>'
+
+        leaderBoardArray.forEach(leaderBoard => {
+            console.log(leaderBoard.name, leaderBoard.totalCost);
+            
+            const leaderboardEntry = document.createElement('li');
+            leaderboardEntry.textContent = `name : ${leaderBoard.name}  - Amount : ${leaderBoard.totalCost ?? 0}  `
+            leaderboardDiv.appendChild(leaderboardEntry);
+        })
+    }
+
 
 document.addEventListener('DOMContentLoaded', async () => {
    await  displayExpense();

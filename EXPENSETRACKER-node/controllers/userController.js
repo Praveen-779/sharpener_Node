@@ -54,7 +54,7 @@ exports.postLogin = async (req,res,next) => {
         } 
     } catch(err) {
         console.log(err);
-        res.status(500).json({err : err});
+        res.status(500).json({err : err}) ;
     }
 }
 
