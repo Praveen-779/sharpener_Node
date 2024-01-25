@@ -5,7 +5,7 @@ const auth = require('../middleware/auth');
 
 router.post('/add-expense',expenseController.addExpense);
 
-router.get('/get-expense',auth.authenticate,expenseController.getExpenses);
+router.get('/get-expense',auth.authenticate ,expenseController.getExpenses);
 
 router.delete('/delete/:id',expenseController.deleteExpense);
 

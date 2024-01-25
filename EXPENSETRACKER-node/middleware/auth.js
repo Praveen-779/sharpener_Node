@@ -7,6 +7,7 @@ const authenticate = async (req,res,next) => {
         const decodedToken =  jwt.verify(token,'secretKey');
         const user =  await User.findByPk(decodedToken.userId);
         req.user = user;
+        console.log('inside mid 2');
         next();
     } catch (err) {
         return res.status(401).json({err : err});

@@ -24,7 +24,7 @@ exports.getExpenses = async (req,res,next) => {
         const expenses = await currUser.getExpenses();
         return res.status(200).json({expenses : expenses});
     } catch(err) {
-        return res.status(500).json({err});
+        return res.status(500).json({err}) ;
     }
 }
 

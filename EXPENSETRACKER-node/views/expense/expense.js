@@ -60,6 +60,52 @@ async function deleteExpense(id) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    displayExpense();
+document.getElementById('rzp-button1').onclick = async function(e) {
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:7000/purchase/premiummembership',{headers : {'Authorization' : token}});
+
+    console.log(response.data.key_id, response.data.order.id);
+
+    const options = {
+        "key" : response.data.key_id,
+        "order_id" : response.data.order.id,
+        "handler" : async function(response) {
+            await axios.post('http://localhost:7000/purchase/updatetransactionstatus',{
+                order_id : options.order_id,
+                payment_id : response.razorpay_payment_id,
+            }, {headers : {"Authorization" : token}})
+
+            alert('TRANSACTION SUCCESSFULL');
+            displayPremium();
+        }
+    }
+    const rzp = new Razorpay(options);
+    rzp.open();
+    e.preventDefault();
+
+    rzp.on('payment.failed', async function(response) {
+        await axios.post('http://localhost:7000/purchase/updatefailedstatus',{order_id : options.order_id},{headers : {"Authorization" : token}})
+        alert('TRANSACTION FAILED');
+    })
+
+}
+
+async function displayPremium() {
+    const token = localStorage.getItem('token')
+    const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
+    const isPremium = findPremium.data.user.ispremiumuser;
+    if(isPremium) {
+        const buyPremiumButton = document.getElementById('rzp-button1');
+        buyPremiumButton.style.display = 'none';
+
+        const premiumMessage = document.createElement('p');
+        premiumMessage.innerHTML = '<h3><strong>YOU ARE A PREMIUM USER!<strong><h3>';
+        document.getElementById('premium').appendChild(premiumMessage);
+    } 
+    
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+   await  displayExpense();
+    await displayPremium();
 });

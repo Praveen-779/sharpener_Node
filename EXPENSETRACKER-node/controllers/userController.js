@@ -57,3 +57,13 @@ exports.postLogin = async (req,res,next) => {
         res.status(500).json({err : err});
     }
 }
+
+exports.getUser = async (req,res,next) => {
+    try { 
+        const user = await User.findOne({where : {id : req.user.id}});
+        res.status(200).json({user : user});
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({error : err});
+    }
+}
