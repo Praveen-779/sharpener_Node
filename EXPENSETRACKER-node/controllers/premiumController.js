@@ -8,7 +8,7 @@ exports.getLeaderBoard = async function (req, res, next) {
             attributes: ['name', 'totalexpense'],
             order: [['totalexpense', 'DESC']]
         })
-        res.status(200).json({ leaderBoard: leaderBoard });
+         res.status(200).json({ leaderBoard: leaderBoard });
     } catch (err) {
         console.log(err);
         res.status(500).json({ err: err });

@@ -18,9 +18,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/user', userRoutes);
-app.use('/expense',expenseRoutes);
+app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
-app.use('/premium',premiumRoutes) ;
+app.use('/premium', premiumRoutes);
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -30,7 +30,7 @@ Order.belongsTo(User);
 
 sequelize
     .sync()
-     .then(result => {
+    .then(result => {
         app.listen(7000);
     })
-    .catch(err => console.log(err))  ;
+    .catch(err => console.log(err));

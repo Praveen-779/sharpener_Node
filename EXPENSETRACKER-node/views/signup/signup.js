@@ -7,7 +7,7 @@ async function addData(event) {
 
     const obj = {
         name : name,
-        email : email,
+        email : email ,
         password : password
     }
 

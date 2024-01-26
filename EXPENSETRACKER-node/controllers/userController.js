@@ -33,7 +33,7 @@ function generateToken(id,ispremiumuser) {
 exports.postLogin = async (req,res,next) => {
     const email = req.body.email;
     const password = req.body.password;
-    if( !email || !password) {
+    if(!email || !password) {
         res.status(400).json({error : 'fill in all data'});
     }
 

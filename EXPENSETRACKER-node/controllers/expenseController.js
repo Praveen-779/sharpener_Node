@@ -1,6 +1,8 @@
 const Expense = require('../models/expense');
+const sequelize = require('../util/database');
 
 exports.addExpense = async (req, res, next) => {
+    const t = await sequelize.transaction();
     const amount = req.body.amount;
     const description = req.body.description;
     const category = req.body.category;
@@ -10,13 +12,20 @@ exports.addExpense = async (req, res, next) => {
             amount : amount,
             description: description,
             category: category
-        })
+        },{transaction : t});
+
         const totalExpense = req.user.totalexpense + + amount;
-        await req.user.update({totalexpense : totalExpense })
+        await req.user.update({totalexpense : totalExpense },{transaction:t});
         console.log(totalExpense);
+
+        //if everything is successfull, transaction will commit
+        await t.commit();
         return res.status(200).json({});
     } catch(err) {
         console.log(err);
+        //if any error occur transaction will rollback to previous commit
+        await t.rollback();
+        return res.status(500).json({error:'failed to add expense'});
     }
 }
 
@@ -31,17 +40,20 @@ exports.getExpenses = async (req,res,next) => {
 
 exports.deleteExpense =  async (req,res,next) => {
     const id = req.params.id;
+    const t = await sequelize.transaction();
     try {
-        const expense = await Expense.findOne({where : {id : id, userId : req.user.id}});
+        const expense = await Expense.findOne({where : {id : id, userId : req.user.id}},{transaction: t});
         const deletingAmount = expense.amount;
         console.log(expense.amount);
-        await expense.destroy();
+        await expense.destroy({transaction:t});
         console.log(deletingAmount);
         const totalExpense = req.user.totalexpense - deletingAmount;
-        await req.user.update({totalexpense : totalExpense});
+        await req.user.update({totalexpense : totalExpense},{transaction:t});
+        await t.commit();
         return res.status(200).json({});
     } catch(err) {
         console.log(err);
+        await  t.rollback();
         return res.status(500).json({err});
         }
 }
