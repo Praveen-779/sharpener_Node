@@ -11,6 +11,9 @@ exports.addExpense = async (req, res, next) => {
             description: description,
             category: category
         })
+        const totalExpense = req.user.totalexpense + + amount;
+        await req.user.update({totalexpense : totalExpense })
+        console.log(totalExpense);
         return res.status(200).json({});
     } catch(err) {
         console.log(err);
@@ -29,10 +32,16 @@ exports.getExpenses = async (req,res,next) => {
 exports.deleteExpense =  async (req,res,next) => {
     const id = req.params.id;
     try {
-        const expense = await Expense.findAll({where : {id : id, userId : req.user.id}});
-        await expense[0].destroy();
+        const expense = await Expense.findOne({where : {id : id, userId : req.user.id}});
+        const deletingAmount = expense.amount;
+        console.log(expense.amount);
+        await expense.destroy();
+        console.log(deletingAmount);
+        const totalExpense = req.user.totalexpense - deletingAmount;
+        await req.user.update({totalexpense : totalExpense});
         return res.status(200).json({});
     } catch(err) {
-        res.status(500).json({err});
+        console.log(err);
+        return res.status(500).json({err});
         }
 }

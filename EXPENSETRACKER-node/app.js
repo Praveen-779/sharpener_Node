@@ -30,7 +30,7 @@ Order.belongsTo(User);
 
 sequelize
     .sync()
-    .then(result => {
+     .then(result => {
         app.listen(7000);
     })
     .catch(err => console.log(err))  ;

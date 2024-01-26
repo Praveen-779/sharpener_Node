@@ -63,21 +63,22 @@ async function deleteExpense(id) {
 }
 
 document.getElementById('rzp-button1').onclick = async function(e) {
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:7000/purchase/premiummembership',{headers : {'Authorization' : token}});
 
-    console.log(response.data.key_id, response.data.order.id);
 
     const options = {
         "key" : response.data.key_id,
         "order_id" : response.data.order.id,
         "handler" : async function(response) {
-            await axios.post('http://localhost:7000/purchase/updatetransactionstatus',{
+             token = await axios.post('http://localhost:7000/purchase/updatetransactionstatus',{
                 order_id : options.order_id,
                 payment_id : response.razorpay_payment_id,
             }, {headers : {"Authorization" : token}})
 
             alert('TRANSACTION SUCCESSFULL');
+            localStorage.setItem('token',token.data.token)
+            console.log('token is =====> ' ,token.data.token);
             displayPremium();
         }
     }
@@ -136,10 +137,10 @@ async function displayPremium() {
         leaderboardDiv.innerHTML = '<h1>LEADERBOARD</h1>'
 
         leaderBoardArray.forEach(leaderBoard => {
-            console.log(leaderBoard.name, leaderBoard.totalCost);
+            console.log(leaderBoard.name, leaderBoard.totalexpense);
             
             const leaderboardEntry = document.createElement('li');
-            leaderboardEntry.textContent = `name : ${leaderBoard.name}  - Amount : ${leaderBoard.totalCost ?? 0}  `
+            leaderboardEntry.textContent = `name : ${leaderBoard.name}  - Amount : ${leaderBoard.totalexpense ?? 0}  `
             leaderboardDiv.appendChild(leaderboardEntry);
         })
     }
