@@ -20,7 +20,7 @@ app.use(express.json());
 app.use('/user', userRoutes);
 app.use('/expense',expenseRoutes);
 app.use('/purchase', purchaseRoutes);
-app.use('/premium',premiumRoutes);
+app.use('/premium',premiumRoutes) ;
 
 User.hasMany(Expense);
 Expense.belongsTo(User);

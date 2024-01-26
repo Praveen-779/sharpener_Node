@@ -26,7 +26,7 @@ exports.getExpenses = async (req,res,next) => {
     }
 }
 
-exports.deleteExpense = async (req,res,next) => {
+exports.deleteExpense =  async (req,res,next) => {
     const id = req.params.id;
     try {
         const expense = await Expense.findAll({where : {id : id, userId : req.user.id}});

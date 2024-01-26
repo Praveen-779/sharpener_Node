@@ -7,4 +7,4 @@ router.get('/premiummembership',auth.authenticate,purchaseController.purchasePre
 router.post('/updatetransactionstatus',auth.authenticate,purchaseController.updatetransactionstatus);
 router.post('/updatefailedstatus',auth.authenticate,purchaseController.updatefailedstatus);
 
-module.exports = router ;
+module.exports = router;

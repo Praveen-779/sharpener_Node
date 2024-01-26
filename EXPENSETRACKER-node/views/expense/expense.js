@@ -94,8 +94,10 @@ document.getElementById('rzp-button1').onclick = async function(e) {
 
 async function displayPremium() {
     const token = localStorage.getItem('token')
-    const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
-    const isPremium = findPremium.data.user.ispremiumuser;
+    // const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
+    const parsedjwt = parseJwt(token);
+    const isPremium = parsedjwt.ispremiumuser;
+    console.log(isPremium)
     if(isPremium) {
         const buyPremiumButton = document.getElementById('rzp-button1');
         buyPremiumButton.style.display = 'none';
@@ -147,3 +149,13 @@ document.addEventListener('DOMContentLoaded', async () => {
    await  displayExpense();
     await displayPremium();
 });
+
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}

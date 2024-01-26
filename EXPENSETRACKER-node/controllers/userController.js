@@ -26,8 +26,8 @@ exports.postExpense = async (req, res, next) => {
     }
 };
 
-function generateToken(id) {
-    return jwt.sign({userId : id}, 'secretKey');
+function generateToken(id,ispremiumuser) {
+    return jwt.sign({userId : id,ispremiumuser}, 'secretKey');
 }
 
 exports.postLogin = async (req,res,next) => {
@@ -46,7 +46,7 @@ exports.postLogin = async (req,res,next) => {
         if(user[0].email === email) {
             const bcryptPassword = await bcrypt.compare(password,user[0].password);
             if(bcryptPassword) {
-                res.status(200).json({message : 'user login in successfully',token : generateToken(user[0].id)});
+                res.status(200).json({message : 'user login in successfully',token : generateToken(user[0].id,user[0].ispremiumuser)});
             }
             else {
                 res.status(401).json({message : 'password incorrect'});
