@@ -74,7 +74,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
              token = await axios.post('http://localhost:7000/purchase/updatetransactionstatus',{
                 order_id : options.order_id,
                 payment_id : response.razorpay_payment_id,
-            }, {headers : {"Authorization" : token }})
+            }, {headers : {"Authorization" : token}})
 
             alert('TRANSACTION SUCCESSFULL');
             localStorage.setItem('token',token.data.token)

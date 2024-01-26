@@ -47,7 +47,7 @@ exports.deleteExpense =  async (req,res,next) => {
         console.log(expense.amount);
         await expense.destroy({transaction:t});
         console.log(deletingAmount);
-        const totalExpense = req.user.totalexpense - deletingAmount;
+        const totalExpense = Math.max(0,req.user.totalexpense - deletingAmount);
         await req.user.update({totalexpense : totalExpense},{transaction:t});
         await t.commit();
         return res.status(200).json({});
