@@ -5,7 +5,7 @@ async function login(event) {
         password: document.getElementById('password').value
     }
     try {
-        const response =  await axios.post('http://localhost:7000/user/login', obj);
+        const response = await axios.post('http://localhost:7000/user/login', obj);
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
             alert(response.data.message);

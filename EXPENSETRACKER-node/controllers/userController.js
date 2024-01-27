@@ -9,7 +9,7 @@ exports.postExpense = async (req, res, next) => {
 
     try {
         if (!name || !email || !password) {
-            return res.status(500).json({ message: 'Fill in all data' });
+           return res.status(500).json({ message: 'Fill in all data' });
         }
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password,saltRounds);

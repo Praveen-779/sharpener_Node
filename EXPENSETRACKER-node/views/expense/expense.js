@@ -10,7 +10,7 @@ async function addExpense(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:7000/expense/add-expense', obj,{headers : {'Authorization' : token}});
+        const response = await axios.post('http://localhost:7000/expense/add-expense', obj, { headers: { 'Authorization': token } });
     }
     catch (err) {
         console.log(err);
@@ -24,7 +24,7 @@ async function displayExpense() {
     try {
         const token = localStorage.getItem('token');
         console.log(token);
-        const result = await axios.get('http://localhost:7000/expense/get-expense',{headers : {'Authorization' : token}});
+        const result = await axios.get('http://localhost:7000/expense/get-expense', { headers: { 'Authorization': token } });
         const displayDiv = document.getElementById('display');
         displayDiv.innerHTML = '';
 
@@ -53,32 +53,32 @@ async function displayExpense() {
 async function deleteExpense(id) {
     const token = localStorage.getItem('token')
     console.log(id);
-    try{
-        await axios.delete(`http://localhost:7000/expense/delete/${id}`,{headers : {'Authorization' : token}});
+    try {
+        await axios.delete(`http://localhost:7000/expense/delete/${id}`, { headers: { 'Authorization': token } });
         displayExpense();
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
     }
 }
 
-document.getElementById('rzp-button1').onclick = async function(e) {
+document.getElementById('rzp-button1').onclick = async function (e) {
     let token = localStorage.getItem('token');
-    const response = await axios.get('http://localhost:7000/purchase/premiummembership',{headers : {'Authorization' : token}});
+    const response = await axios.get('http://localhost:7000/purchase/premiummembership', { headers: { 'Authorization': token } });
 
 
     const options = {
-        "key" : response.data.key_id,
-        "order_id" : response.data.order.id,
-        "handler" : async function(response) {
-             token = await axios.post('http://localhost:7000/purchase/updatetransactionstatus',{
-                order_id : options.order_id,
-                payment_id : response.razorpay_payment_id,
-            }, {headers : {"Authorization" : token}})
+        "key": response.data.key_id,
+        "order_id": response.data.order.id,
+        "handler": async function (response) {
+            token = await axios.post('http://localhost:7000/purchase/updatetransactionstatus', {
+                order_id: options.order_id,
+                payment_id: response.razorpay_payment_id,
+            }, { headers: { "Authorization": token } })
 
             alert('TRANSACTION SUCCESSFULL');
-            localStorage.setItem('token',token.data.token)
-            console.log('token is =====> ' ,token.data.token);
+            localStorage.setItem('token', token.data.token)
+            console.log('token is =====> ', token.data.token);
             displayPremium();
         }
     }
@@ -86,8 +86,8 @@ document.getElementById('rzp-button1').onclick = async function(e) {
     rzp.open();
     e.preventDefault();
 
-    rzp.on('payment.failed', async function(response) {
-        await axios.post('http://localhost:7000/purchase/updatefailedstatus',{order_id : options.order_id},{headers : {"Authorization" : token}})
+    rzp.on('payment.failed', async function (response) {
+        await axios.post('http://localhost:7000/purchase/updatefailedstatus', { order_id: options.order_id }, { headers: { "Authorization": token } })
         alert('TRANSACTION FAILED');
     })
 
@@ -99,62 +99,62 @@ async function displayPremium() {
     const parsedjwt = parseJwt(token);
     const isPremium = parsedjwt.ispremiumuser;
     console.log(isPremium)
-    if(isPremium) {
+    if (isPremium) {
         const buyPremiumButton = document.getElementById('rzp-button1');
         buyPremiumButton.style.display = 'none';
 
         const premiumMessage = document.createElement('p');
         premiumMessage.innerHTML = '<h3><strong>YOU ARE A PREMIUM USER!<strong><h3>';
         document.getElementById('premium').appendChild(premiumMessage);
-        
+
         const showLeaderboardButton = document.createElement('button');
         showLeaderboardButton.textContent = 'Show Leaderboard';
-        showLeaderboardButton.addEventListener('click',getLeaderboard);
+        showLeaderboardButton.addEventListener('click', getLeaderboard);
         document.getElementById('premium').appendChild(showLeaderboardButton);
     }
-        
-        
-    } 
 
-    async function getLeaderboard() {
-        try {
-            const token = localStorage.getItem('token');
-            console.log(token);
-            const response = await axios.get('http://localhost:7000/premium/leaderboard',{headers : {'Authorization' : token}});
-            const leaderBoardArray = response.data.leaderBoard;
-            displayLeaderBoard(leaderBoardArray);
 
-        } catch(err) {
-            console.log(err);
-        }
+}
+
+async function getLeaderboard() {
+    try {
+        const token = localStorage.getItem('token');
+        console.log(token);
+        const response = await axios.get('http://localhost:7000/premium/leaderboard', { headers: { 'Authorization': token } });
+        const leaderBoardArray = response.data.leaderBoard;
+        displayLeaderBoard(leaderBoardArray);
+
+    } catch (err) {
+        console.log(err);
     }
-    
-    function displayLeaderBoard(leaderBoardArray) {
-        const leaderboardDiv = document.getElementById('leaderboard');
-        console.log(leaderBoardArray);
-        leaderboardDiv.innerHTML = '';
+}
 
-        leaderboardDiv.innerHTML = '<h1>LEADERBOARD</h1>'
+function displayLeaderBoard(leaderBoardArray) {
+    const leaderboardDiv = document.getElementById('leaderboard');
+    console.log(leaderBoardArray);
+    leaderboardDiv.innerHTML = '';
 
-        leaderBoardArray.forEach(leaderBoard => {
-            console.log(leaderBoard.name, leaderBoard.totalexpense);
-            
-            const leaderboardEntry = document.createElement('li');
-            leaderboardEntry.textContent = `name : ${leaderBoard.name}  - Amount : ${leaderBoard.totalexpense ?? 0}  `
-            leaderboardDiv.appendChild(leaderboardEntry);
-        })
-    }
+    leaderboardDiv.innerHTML = '<h1>LEADERBOARD</h1>'
+
+    leaderBoardArray.forEach(leaderBoard => {
+        console.log(leaderBoard.name, leaderBoard.totalexpense);
+
+        const leaderboardEntry = document.createElement('li');
+        leaderboardEntry.textContent = `name : ${leaderBoard.name}  - Amount : ${leaderBoard.totalexpense ?? 0}  `
+        leaderboardDiv.appendChild(leaderboardEntry);
+    })
+}
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-   await  displayExpense();
+    await displayExpense();
     await displayPremium();
 });
 
-function parseJwt (token) {
+function parseJwt(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
 

@@ -12,7 +12,7 @@ exports.addExpense = async (req, res, next) => {
             amount : amount,
             description: description,
             category: category
-        },{transaction : t});
+        },{transaction : t}) ;
 
         const totalExpense = req.user.totalexpense + + amount;
         await req.user.update({totalexpense : totalExpense },{transaction:t});

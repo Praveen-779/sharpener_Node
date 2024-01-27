@@ -52,7 +52,7 @@ exports.updatefailedstatus = async (req, res, next) => {
         await req.user.update({ispremiumuser : false});
         return res.status(200).json({ message: "failed" });
     } catch (err) {
-        console.log(err);
+         console.log(err);
         return;
     }
 }

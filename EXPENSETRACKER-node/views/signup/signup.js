@@ -18,5 +18,4 @@ async function addData(event) {
    catch(error) {
     document.getElementById('displayError').innerHTML = `<div style= " color:red;">${error} ,  ${error.response.data.err}</div>`;
    }
-
 }

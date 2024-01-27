@@ -5,4 +5,4 @@ const auth = require('../middleware/auth');
 
 router.get('/leaderboard',auth.authenticate, premiumController.getLeaderBoard);
 
-module.exports = router;
+module.exports = router ;
