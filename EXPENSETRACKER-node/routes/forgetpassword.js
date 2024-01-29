@@ -4,6 +4,6 @@ const forgetpasswordController = require('../controllers/forgetpasswordControlle
 
 router.post('/forgetpassword',forgetpasswordController.forgetPasswordmail)
 router.get('/resetpassword/:uuid',forgetpasswordController.resetpassword);
-router.post('/resetpassword',forgetpasswordController.updatepassword);
+router.use('/updatepassword/:uuid',forgetpasswordController.updatepassword);
 
 module.exports = router ;

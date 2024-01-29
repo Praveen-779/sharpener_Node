@@ -1,5 +1,27 @@
 const Expense = require('../models/expense');
 const sequelize = require('../util/database');
+const DownloadedExpense = require('../models/downloadedexpense')
+
+
+const UserServices = require('../services/userservices');
+const S3Services = require('../services/s3services');
+
+exports.downloadExpense = async (req,res,next) => {
+    try {
+        const expenses = await UserServices.getExpenses(req);
+        const stringifiedExpense = JSON.stringify(expenses);
+        const filename = `Expensetrack${req.user.id}/${new Date()}.txt`;
+        const fileUrl = await S3Services.uploadTos3(stringifiedExpense,filename);
+        addDownloadedExpense(req,fileUrl);
+        console.log(fileUrl);
+        res.status(200).json({url : fileUrl});
+    } catch(err) {
+        console.log(err);
+    }
+    
+}
+
+
 
 exports.addExpense = async (req, res, next) => {
     const t = await sequelize.transaction();
@@ -56,4 +78,30 @@ exports.deleteExpense =  async (req,res,next) => {
         await  t.rollback();
         return res.status(500).json({err});
         }
+}
+
+exports.getDownloadedExpense = async(req,res,next) => {
+    try {
+        console.log(req.user.id);
+        const response = await DownloadedExpense.findAll({where : {userId : req.user.id}});
+        res.status(200).json({downloadedFiles : response});
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({err : err});
+    }
+   
+}
+
+async function addDownloadedExpense(req,fileUrl)  {
+    try {
+        const response = await DownloadedExpense.create({
+            url : fileUrl,
+            date : new Date().toLocaleString(),
+            userId : req.user.id
+        })
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+    
 }

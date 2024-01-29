@@ -11,30 +11,33 @@ const { v4: uuidv4 } = require('uuid');
 exports.forgetPasswordmail = async (req, res, next) => {
   try {
     const email = req.body.email;
-    const uuid = generateUUID();
-    const validUser = await updateforgotpassworddb(email,uuid);
+    const uuid = uuidv4();
+    const user = await User.findOne({ where: { email: email } });
+    console.log(user.name);
 
-    if(validUser) {
+    if (user) {
+      await Forgetpasswordrequest.create({ id: uuid, isactive: true,userId : user.id });
+
       var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: "bbab1910430@skdc.edu.in",
-  
+
           pass: process.env.MAIL_PASS
         }
       });
-      
+
       const mailOptions = {
         from: 'bbab1910430@skdc.edu.in',
         to: email,
         subject: 'forget password',
-        text: `link to update new password http://localhost:7000/password/resetpassword/${uuid}`
+        html: `<a href="http://localhost:7000/password/resetpassword/${uuid}">Reset Password</a>`
       };
-  
+
       const info = await transporter.sendMail(mailOptions)
-      return res.status(200).json({ success:true , uuid : uuid});
+      return res.status(200).json({ success: true, uuid: uuid });
     }
-    else res.status(200).json({success : false});
+    else throw new Error(error);
   } catch (err) {
     console.log(err);
     res.status(500).json({ err: err });
@@ -43,16 +46,28 @@ exports.forgetPasswordmail = async (req, res, next) => {
 }
 
 exports.resetpassword = async (req, res, next) => {
-  
+
   try {
     const uuid = req.params.uuid;
     const response = await Forgetpasswordrequest.findOne({ where: { id: uuid } });
     // const isActive = response.isactive;
-    if (true) {
-      const resetPasswordPagePath = path.join(__dirname, '../', 'views', 'forget-password', 'resetpassword.html');
-      console.log('inside isactive');
-      res.sendFile(resetPasswordPagePath);
-      console.log('success');
+    if (response) {
+      response.update({ isactive: false });
+      res.send(
+        `<html>
+        <form action="http://localhost:7000/password/updatepassword/${uuid}" >
+        <label for="password">Enter New Password</label>
+        <input type="password" name="password" id="password">
+        <button type="submit">Reset Password</button>
+        </form>
+        <script>
+        function formsubmit(event) {
+          event.preventDefault();
+          console.log('you did it');
+        }
+        </script>
+      </html>
+      `)
     } else {
       res.send('404 Error')
     }
@@ -63,23 +78,23 @@ exports.resetpassword = async (req, res, next) => {
 
 exports.updatepassword = async (req, res, next) => {
   try {
-    console.log('inside update last')
-    const email = req.body.email;
-    const password = req.body.password;
-    console.log(password, email);
+    console.log('inside updatepassword');
+    const uuid = req.params.uuid;
+    const password = req.query.password;
+    console.log(uuid,password);
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    console.log(hashedPassword);
 
-    const user = await User.findOne({ where: { email: email } });
+    const response = await Forgetpasswordrequest.findOne({where:{id:uuid}})
+    const user = await User.findOne({where: {id:response.userId}});
 
+    
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    await User.update({ password: hashedPassword }, { where: { email: email } });
-    await Forgetpasswordrequest.destroy({where :{userId : user.id}});
+    await user.update({ password: hashedPassword });
 
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ alert : 'password changed succesfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -87,29 +102,4 @@ exports.updatepassword = async (req, res, next) => {
 };
 
 
-
-function generateUUID() {
-  const uuid = uuidv4();
-  console.log('Generated UUID:', uuid);
-  
-  return uuid;
-
-}
-
-async function updateforgotpassworddb(email, mmid) {
-  try {
-    console.log(email);
-    const user = await User.findOne({ where: { email: email } })
-    if(!user) {
-      return false;
-    }
-    await Forgetpasswordrequest.create({ id: mmid, isactive: true, userId: user.id });
-    return true;
-    
-  } catch (err) {
-    console.log(err);
-    return err;
-  }
-
-}
 

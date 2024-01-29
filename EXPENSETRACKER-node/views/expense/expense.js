@@ -1,5 +1,9 @@
+let token = localStorage.getItem('token');
+
+const parsedjwt = parseJwt(token);
+let isPremium = parsedjwt.ispremiumuser;
+
 async function addExpense(event) {
-    const token = localStorage.getItem('token');
     event.preventDefault();
     const displayDiv = document.getElementById('display');
 
@@ -22,7 +26,6 @@ async function addExpense(event) {
 
 async function displayExpense() {
     try {
-        const token = localStorage.getItem('token');
         console.log(token);
         const result = await axios.get('http://localhost:7000/expense/get-expense', { headers: { 'Authorization': token } });
         const displayDiv = document.getElementById('display');
@@ -51,7 +54,6 @@ async function displayExpense() {
 }
 
 async function deleteExpense(id) {
-    const token = localStorage.getItem('token')
     console.log(id);
     try {
         await axios.delete(`http://localhost:7000/expense/delete/${id}`, { headers: { 'Authorization': token } });
@@ -63,7 +65,6 @@ async function deleteExpense(id) {
 }
 
 document.getElementById('rzp-button1').onclick = async function (e) {
-    let token = localStorage.getItem('token');
     const response = await axios.get('http://localhost:7000/purchase/premiummembership', { headers: { 'Authorization': token } });
 
 
@@ -93,32 +94,42 @@ document.getElementById('rzp-button1').onclick = async function (e) {
 
 }
 
+async function download() {
+    try {
+        const response = await axios.get('http://localhost:7000/expense/download', { headers: { "Authorization": token } });
+        const a = document.createElement('a');
+        a.href = response.data.url;
+        a.click();
+        displayDownloads()
+    } catch (err) {
+        console.log(err);
+    }
+
+
+}
+
 async function displayPremium() {
-    const token = localStorage.getItem('token')
     // const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
-    const parsedjwt = parseJwt(token);
-    const isPremium = parsedjwt.ispremiumuser;
-    console.log(isPremium)
+    console.log(isPremium,'dis pre')
     if (isPremium) {
         const buyPremiumButton = document.getElementById('rzp-button1');
         buyPremiumButton.style.display = 'none';
 
         const premiumMessage = document.createElement('p');
-        premiumMessage.innerHTML = '<h3><strong>YOU ARE A PREMIUM USER!<strong><h3>';
+        premiumMessage.innerHTML = `<h3><strong>YOU ARE A PREMIUM USER!   </strong></h3> <button type="submit" onclick="download()" >Download expense</button>`;
         document.getElementById('premium').appendChild(premiumMessage);
 
         const showLeaderboardButton = document.createElement('button');
         showLeaderboardButton.textContent = 'Show Leaderboard';
         showLeaderboardButton.addEventListener('click', getLeaderboard);
         document.getElementById('premium').appendChild(showLeaderboardButton);
+
+        displayDownloads();
     }
-
-
 }
 
 async function getLeaderboard() {
     try {
-        const token = localStorage.getItem('token');
         console.log(token);
         const response = await axios.get('http://localhost:7000/premium/leaderboard', { headers: { 'Authorization': token } });
         const leaderBoardArray = response.data.leaderBoard;
@@ -145,10 +156,53 @@ function displayLeaderBoard(leaderBoardArray) {
     })
 }
 
+async function displayDownloads() {
+    try {
+        if(isPremium) {
+            const response = await axios.get('http://localhost:7000/expense/downloadedexpense', { headers: { 'Authorization': token } })
+        const downloadedDiv = document.getElementById('downloadedfiles');
+        const downloadedFiles = response.data.downloadedFiles;
+
+        downloadedDiv.innerHTML = '';
+
+        const h1 = document.createElement('h2');
+        h1.innerText = 'Your Downloaded List Data';
+        downloadedDiv.appendChild(h1);
+
+
+        for (let i = 0; i < downloadedFiles.length; i++) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            const button = document.createElement('button')
+
+            button.innerText = "Download";
+            a.href = downloadedFiles[i].url;
+
+            const date = downloadedFiles[i].date;
+
+            li.textContent = ` file ${i + 1}
+        ,    ${date}   `;
+
+            button.addEventListener('click', () => {
+                a.click();
+            });
+            li.appendChild(button);
+            li.appendChild(a);
+            downloadedDiv.appendChild(li);
+
+        }
+        }
+        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     await displayExpense();
     await displayPremium();
+    console.log(parseJwt(token));
 });
 
 function parseJwt(token) {
