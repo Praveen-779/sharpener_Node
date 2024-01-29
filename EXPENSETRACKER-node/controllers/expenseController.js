@@ -66,9 +66,7 @@ exports.deleteExpense =  async (req,res,next) => {
     try {
         const expense = await Expense.findOne({where : {id : id, userId : req.user.id}},{transaction: t});
         const deletingAmount = expense.amount;
-        console.log(expense.amount);
         await expense.destroy({transaction:t});
-        console.log(deletingAmount);
         const totalExpense = Math.max(0,req.user.totalexpense - deletingAmount);
         await req.user.update({totalexpense : totalExpense},{transaction:t});
         await t.commit();
@@ -102,6 +100,32 @@ async function addDownloadedExpense(req,fileUrl)  {
     } catch (err) {
         console.log(err);
         throw err;
+    }
+    
+}
+
+exports.pagination = async (req,res,next) => {
+    try {
+        const page = +req.query.page || 1;
+    let totalItems = await req.user.countExpenses();
+    const pageSize = 10;
+
+   const expenses = await  req.user.getExpenses({
+        offset : (page - 1) * pageSize,
+        limit : pageSize,
+    })
+    res.status(200).json({
+        expenses : expenses,
+        currentPage : page,
+        hasNextPage: pageSize * page < totalItems,
+        nextPage: page + 1,
+        previousPage : page - 1,
+        hasPreviousPage : page > 1,
+        lastPage : Math.ceil(totalItems / pageSize)
+    })
+    } catch(err) {
+        console.log(err);
+        res.status(500).json({err : err});
     }
     
 }

@@ -13,6 +13,6 @@ router.get('/download',auth.authenticate,expenseController.downloadExpense);
 
 router.get('/downloadedexpense',auth.authenticate,expenseController.getDownloadedExpense);
 
-
+router.get('/pagination',auth.authenticate,expenseController.pagination)
 
 module.exports = router;

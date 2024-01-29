@@ -20,44 +20,14 @@ async function addExpense(event) {
         console.log(err);
     }
 
-    displayExpense();
-}
-
-
-async function displayExpense() {
-    try {
-        console.log(token);
-        const result = await axios.get('http://localhost:7000/expense/get-expense', { headers: { 'Authorization': token } });
-        const displayDiv = document.getElementById('display');
-        displayDiv.innerHTML = '';
-
-        const expenses = result.data.expenses;
-
-        for (let i = 0; i < expenses.length; i++) {
-
-            const amount = expenses[i].amount;
-            const category = expenses[i].category;
-            const description = expenses[i].description;
-            const id = expenses[i].id;
-
-            const expenseDetail = document.createElement('p');
-            expenseDetail.innerHTML =
-                `Amount : ${amount} - Category : ${category} - Description : ${description}
-                 <button onclick="deleteExpense(${id})">Delete</button>`
-
-            displayDiv.appendChild(expenseDetail);
-        }
-
-    } catch (err) {
-        console.log(err);
-    }
+    listExpenses()
 }
 
 async function deleteExpense(id) {
     console.log(id);
     try {
-        await axios.delete(`http://localhost:7000/expense/delete/${id}`, { headers: { 'Authorization': token } });
-        displayExpense();
+        const response = await axios.delete(`http://localhost:7000/expense/delete/${id}`, { headers: { 'Authorization': token } });
+        listExpenses();
 
     } catch (err) {
         console.log(err);
@@ -110,7 +80,7 @@ async function download() {
 
 async function displayPremium() {
     // const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
-    console.log(isPremium,'dis pre')
+    console.log(isPremium, 'dis pre')
     if (isPremium) {
         const buyPremiumButton = document.getElementById('rzp-button1');
         buyPremiumButton.style.display = 'none';
@@ -158,52 +128,124 @@ function displayLeaderBoard(leaderBoardArray) {
 
 async function displayDownloads() {
     try {
-        if(isPremium) {
+        if (isPremium) {
             const response = await axios.get('http://localhost:7000/expense/downloadedexpense', { headers: { 'Authorization': token } })
-        const downloadedDiv = document.getElementById('downloadedfiles');
-        const downloadedFiles = response.data.downloadedFiles;
+            const downloadedDiv = document.getElementById('downloadedfiles');
+            const downloadedFiles = response.data.downloadedFiles;
 
-        downloadedDiv.innerHTML = '';
+            downloadedDiv.innerHTML = '';
 
-        const h1 = document.createElement('h2');
-        h1.innerText = 'Your Downloaded List Data';
-        downloadedDiv.appendChild(h1);
+            const h1 = document.createElement('h2');
+            h1.innerText = 'Your Downloaded List Data';
+            downloadedDiv.appendChild(h1);
 
 
-        for (let i = 0; i < downloadedFiles.length; i++) {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            const button = document.createElement('button')
+            for (let i = 0; i < downloadedFiles.length; i++) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                const button = document.createElement('button')
 
-            button.innerText = "Download";
-            a.href = downloadedFiles[i].url;
+                button.innerText = "Download";
+                a.href = downloadedFiles[i].url;
 
-            const date = downloadedFiles[i].date;
+                const date = downloadedFiles[i].date;
 
-            li.textContent = ` file ${i + 1}
+                li.textContent = ` file ${i + 1}
         ,    ${date}   `;
 
-            button.addEventListener('click', () => {
-                a.click();
-            });
-            li.appendChild(button);
-            li.appendChild(a);
-            downloadedDiv.appendChild(li);
+                button.addEventListener('click', () => {
+                    a.click();
+                });
+                li.appendChild(button);
+                li.appendChild(a);
+                downloadedDiv.appendChild(li);
 
+            }
         }
-        }
-        
+
     } catch (err) {
         console.log(err);
     }
 }
 
+function listExpenses(expenses) {
+    try {
+
+        const displayDiv = document.getElementById('display');
+        displayDiv.innerHTML = '';
+
+        for (let i = 0; i < expenses.length; i++) {
+
+            const amount = expenses[i].amount;
+            const category = expenses[i].category;
+            const description = expenses[i].description;
+            const id = expenses[i].id;
+
+            const expenseDetail = document.createElement('p');
+            expenseDetail.innerHTML =
+                `Amount : ${amount} - Category : ${category} - Description : ${description}
+                 <button onclick="deleteExpense(${id})">Delete</button>`
+
+            displayDiv.appendChild(expenseDetail);
+        }
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+function showPagination(data) {
+    const paginationDiv = document.getElementById("pagination");
+    paginationDiv.innerHTML = '';
+    if (data.hasPreviousPage) {
+        const button1 = document.createElement('button');
+        button1.textContent = data.previousPage;
+        button1.addEventListener('click', () => handlePageClick(data.previousPage));
+        paginationDiv.appendChild(button1);
+    }
+    
+   
+    const button2 = document.createElement('button');
+    button2.textContent = data.currentPage;
+    button2.style.fontWeight = 'bold';
+    paginationDiv.appendChild(button2);
+
+    if (data.hasNextPage) {
+        // const paginationDiv = document.getElementById("pagination");
+        const button3 = document.createElement('button');
+        button3.textContent = data.nextPage;
+        button3.addEventListener('click', () => handlePageClick(data.nextPage));
+        paginationDiv.appendChild(button3);
+    }
+}
+
+async function handlePageClick(page) {
+    const response = await axios.get(`http://localhost:7000/expense/pagination/?page=${page}`, { headers: { 'Authorization': token } })
+        listExpenses(response.data.expenses);
+        console.log(response.data.expenses.length);
+        showPagination(response.data);
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await displayExpense();
+    // await displayExpense();
     await displayPremium();
-    console.log(parseJwt(token));
+    const page = 1;
+    try {
+        const response = await axios.get(`http://localhost:7000/expense/pagination/?page=${page}`, { headers: { 'Authorization': token } })
+        listExpenses(response.data.expenses);
+        console.log(response.data.expenses.length);
+        showPagination(response.data);
+    } catch (err) {
+        console.log(err);
+    }
+
 });
+
+
+
+
+
+
 
 function parseJwt(token) {
     var base64Url = token.split('.')[1];
