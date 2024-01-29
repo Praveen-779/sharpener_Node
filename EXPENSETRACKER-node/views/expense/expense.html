@@ -29,6 +29,18 @@
         <button id="rzp-button1">Buy Premium</button>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     </div>
+    <br>
+    <div id="choosesize">
+        <form id="pagesize" onsubmit="savePageSize(event)">
+            <label for="itemsperpage">Select Rows Per Page</label>
+            <select id="itemsperpage" name="itemsperpage">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+            </select>
+            <button>save</button>
+        </form>
+    </div><br>
    
     <div id="display">
 

@@ -106,13 +106,13 @@ async function addDownloadedExpense(req,fileUrl)  {
 
 exports.pagination = async (req,res,next) => {
     try {
+        const pageSize = req.params.pagesize;
         const page = +req.query.page || 1;
     let totalItems = await req.user.countExpenses();
-    const pageSize = 10;
 
    const expenses = await  req.user.getExpenses({
         offset : (page - 1) * pageSize,
-        limit : pageSize,
+        limit : +pageSize,
     })
     res.status(200).json({
         expenses : expenses,

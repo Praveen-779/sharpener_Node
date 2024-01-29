@@ -1,4 +1,5 @@
 let token = localStorage.getItem('token');
+let pageSize = localStorage.getItem('pagesize');
 
 const parsedjwt = parseJwt(token);
 let isPremium = parsedjwt.ispremiumuser;
@@ -220,7 +221,8 @@ function showPagination(data) {
 }
 
 async function handlePageClick(page) {
-    const response = await axios.get(`http://localhost:7000/expense/pagination/?page=${page}`, { headers: { 'Authorization': token } })
+    pageSize = localStorage.getItem('pagesize');
+    const response = await axios.get(`http://localhost:7000/expense/pagination/${pageSize}/?page=${page}`, { headers: { 'Authorization': token } })
         listExpenses(response.data.expenses);
         console.log(response.data.expenses.length);
         showPagination(response.data);
@@ -231,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await displayPremium();
     const page = 1;
     try {
-        const response = await axios.get(`http://localhost:7000/expense/pagination/?page=${page}`, { headers: { 'Authorization': token } })
+        const response = await axios.get(`http://localhost:7000/expense/pagination/${pageSize}?page=${page}`, { headers: { 'Authorization': token } })
         listExpenses(response.data.expenses);
         console.log(response.data.expenses.length);
         showPagination(response.data);
@@ -242,7 +244,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+async function savePageSize(event) {
+    event.preventDefault();
+    const size = document.getElementById('itemsperpage').value;
+    localStorage.setItem('pagesize',size);
+    alert(`page limit set to ${size}`);
+    handlePageClick(1)
 
+}
 
 
 
