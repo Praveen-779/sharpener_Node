@@ -31,7 +31,7 @@ async function deleteExpense(id) {
         listExpenses();
 
     } catch (err) {
-        console.log(err);
+        console.log(err) ;
     }
 }
 
