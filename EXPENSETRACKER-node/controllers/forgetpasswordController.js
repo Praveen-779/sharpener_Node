@@ -1,5 +1,4 @@
 var nodemailer = require('nodemailer');
-require('dotenv').config();
 const path = require('path');
 const bcrypt = require('bcrypt');
 

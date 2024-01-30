@@ -31,7 +31,7 @@ async function deleteExpense(id) {
         listExpenses();
 
     } catch (err) {
-        console.log(err) ;
+        console.log(err);
     }
 }
 
@@ -204,8 +204,8 @@ function showPagination(data) {
         button1.addEventListener('click', () => handlePageClick(data.previousPage));
         paginationDiv.appendChild(button1);
     }
-    
-   
+
+
     const button2 = document.createElement('button');
     button2.textContent = data.currentPage;
     button2.style.fontWeight = 'bold';
@@ -223,9 +223,9 @@ function showPagination(data) {
 async function handlePageClick(page) {
     pageSize = localStorage.getItem('pagesize');
     const response = await axios.get(`http://localhost:7000/expense/pagination/${pageSize}/?page=${page}`, { headers: { 'Authorization': token } })
-        listExpenses(response.data.expenses);
-        console.log(response.data.expenses.length);
-        showPagination(response.data);
+    listExpenses(response.data.expenses);
+    console.log(response.data.expenses.length);
+    showPagination(response.data);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function savePageSize(event) {
     event.preventDefault();
     const size = document.getElementById('itemsperpage').value;
-    localStorage.setItem('pagesize',size);
+    localStorage.setItem('pagesize', size);
     alert(`page limit set to ${size}`);
     handlePageClick(1)
 
