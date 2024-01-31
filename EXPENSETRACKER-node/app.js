@@ -49,8 +49,7 @@ Forgetpasswordrequest.belongsTo(User);
 
 User.hasMany(DownloadedExpense);
 DownloadedExpense.belongsTo(User);
-console.log(process.env.MAIL_PASS)
-console.log('hello man ')
+console.log(process.env.PORT)
 
 sequelize
     .sync()

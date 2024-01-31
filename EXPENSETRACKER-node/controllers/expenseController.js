@@ -42,7 +42,7 @@ exports.addExpense = async (req, res, next) => {
 
         //if everything is successfull, transaction will commit
         await t.commit();
-        return res.status(200).json({});
+        return res.status(200).json({}) ;
     } catch(err) {
         console.log(err);
         //if any error occur transaction will rollback to previous commit

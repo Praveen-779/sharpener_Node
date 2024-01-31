@@ -20,7 +20,7 @@ exports.forgetPasswordmail = async (req, res, next) => {
       var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          user: "bbab1910430@skdc.edu.in",
+          user: process.env.GMAIL,
 
           pass: process.env.MAIL_PASS
         }
@@ -59,12 +59,7 @@ exports.resetpassword = async (req, res, next) => {
         <input type="password" name="password" id="password">
         <button type="submit">Reset Password</button>
         </form>
-        <script>
-        function formsubmit(event) {
-          event.preventDefault();
-          console.log('you did it');
-        }
-        </script>
+        
       </html>
       `)
     } else {
@@ -93,12 +88,9 @@ exports.updatepassword = async (req, res, next) => {
     }
     await user.update({ password: hashedPassword });
 
-    return res.status(200).json({ alert : 'password changed succesfully' });
+    return res.status(200).json({ message: 'password changed succesfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
-

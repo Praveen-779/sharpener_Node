@@ -45,7 +45,7 @@ exports.updatetransactionstatus = async (req, res, next) => {
 }
 
 exports.updatefailedstatus = async (req, res, next) => {
-    try {
+    try  {
         const orderId = req.body.order_id;
         const response = await Orders.findOne({ where: { orderid: orderId } })
         await response.update({ status: "failed" })
