@@ -6,12 +6,12 @@ const DownloadedExpense = sequelize.define('downloadedexpense', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
-        allowNull: false ,
+        allowNull: false,
         primaryKey: true
     },
 
-    date : Sequelize.STRING,
-    url : Sequelize.STRING
+    date: Sequelize.STRING,
+    url: Sequelize.STRING
 })
 
 module.exports = DownloadedExpense;

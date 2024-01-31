@@ -16,6 +16,7 @@ async function addExpense(event) {
 
     try {
         const response = await axios.post('http://localhost:7000/expense/add-expense', obj, { headers: { 'Authorization': token } });
+        document.getElementById("expenseForm").reset()
     }
     catch (err) {
         console.log(err);
@@ -50,8 +51,9 @@ document.getElementById('rzp-button1').onclick = async function (e) {
 
             alert('TRANSACTION SUCCESSFULL');
             localStorage.setItem('token', token.data.token)
-            console.log('token is =====> ', token.data.token);
             displayPremium();
+            location.reload();
+
         }
     }
     const rzp = new Razorpay(options);

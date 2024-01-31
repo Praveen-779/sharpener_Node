@@ -6,15 +6,15 @@ const Expense = sequelize.define('Expense', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
-        allowNull: false ,
+        allowNull: false,
         primaryKey: true
     },
 
-    amount : Sequelize.INTEGER , 
+    amount: Sequelize.INTEGER,
 
-    description : Sequelize.STRING,
+    description: Sequelize.STRING,
 
-    category : Sequelize.STRING
+    category: Sequelize.STRING
 })
 
 module.exports = Expense;
