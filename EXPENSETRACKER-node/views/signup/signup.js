@@ -14,7 +14,7 @@ async function addData(event) {
     }
 
     try {
-       const response =  await axios.post('http://localhost:7000/user/signup',obj)
+       const response =  await axios.post('http://51.21.2.30:7000/user/signup',obj)
        alert('sign up successfull, now please login');
        
     }

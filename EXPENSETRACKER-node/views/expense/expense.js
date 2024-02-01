@@ -1,6 +1,6 @@
 let token = localStorage.getItem('token');
 let pageSize = localStorage.getItem('pagesize');
-const host = "http://localhost:7000"
+const host = "http://51.21.2.30:7000"
 
 const parsedjwt = parseJwt(token);
 let isPremium = parsedjwt.ispremiumuser;
