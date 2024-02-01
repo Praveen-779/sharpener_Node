@@ -7,7 +7,7 @@ async function login(event) {
     }
     try {
         console.log(obj);
-        const response = await  axios.post('http://51.21.2.30:7000/user/login', obj);
+        const response = await  axios.post('http://51.20.103.86:7000/user/login', obj);
         if (response.status === 200) {
             localStorage.setItem('token', response.data.token);
             alert(response.data.message);

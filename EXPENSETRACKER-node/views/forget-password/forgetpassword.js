@@ -2,7 +2,7 @@ async function forgetPassword(event) {
     try {
         event.preventDefault();
         const email = document.getElementById('email').value;
-        const response = await axios.post('http://51.21.2.30:7000/password/forgetpassword', { email: email });
+        const response = await axios.post('http://51.20.103.86:7000/password/forgetpassword', { email: email });
         const success = response.data.success;
 
 
