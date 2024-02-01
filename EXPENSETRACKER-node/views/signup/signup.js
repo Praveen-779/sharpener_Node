@@ -5,6 +5,8 @@ async function addData(event) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value
 
+    document.getElementById('signupForm').reset() 
+
     const obj = {
         name : name,
         email : email,
@@ -13,8 +15,7 @@ async function addData(event) {
 
     try {
        const response =  await axios.post('http://localhost:7000/user/signup',obj)
-       alert('user signup success, please login')
-       document.getElementById('signupform').reset();
+       alert('sign up successfull, now please login');
        
     }
    catch(error) {
