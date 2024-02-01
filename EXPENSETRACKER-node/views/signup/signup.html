@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up </title>
 </head>
 <body style="text-align:center;">
-    <form  onsubmit="addData(event)" >
+    <form onsubmit="addData(event)" method="POST">
         <label for="name">Enter Name</label><br>
         <input type="text" id="name" name="name" ><br><br>
         <label for="email">Enter Email</label><br>
@@ -19,6 +19,5 @@
     <a href="../login/login.html" style="background-color: aqua; color:brown">User Login</a>
     <div id="displayError"></div>
 </body>
-<script src="./signup.js">
-</script>
+<script src="./signup.js"></script>
 </html>

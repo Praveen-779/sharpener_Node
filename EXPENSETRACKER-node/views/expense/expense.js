@@ -1,5 +1,6 @@
 let token = localStorage.getItem('token');
 let pageSize = localStorage.getItem('pagesize');
+const host = "http://localhost:7000"
 
 const parsedjwt = parseJwt(token);
 let isPremium = parsedjwt.ispremiumuser;
@@ -15,20 +16,21 @@ async function addExpense(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:7000/expense/add-expense', obj, { headers: { 'Authorization': token } });
+        const response = await axios.post(`${host}/expense/add-expense`, obj, { headers: { 'Authorization': token } });
+        handlePageClick(1)
     }
     catch (err) {
         console.log(err);
     }
 
-    listExpenses()
+
 }
 
 async function deleteExpense(id) {
     console.log(id);
     try {
-        const response = await axios.delete(`http://localhost:7000/expense/delete/${id}`, { headers: { 'Authorization': token } });
-        listExpenses();
+        const response = await axios.delete(`${host}/expense/delete/${id}`, { headers: { 'Authorization': token } });
+        handlePageClick(1)
 
     } catch (err) {
         console.log(err);
@@ -36,22 +38,23 @@ async function deleteExpense(id) {
 }
 
 document.getElementById('rzp-button1').onclick = async function (e) {
-    const response = await axios.get('http://localhost:7000/purchase/premiummembership', { headers: { 'Authorization': token } });
+    const response = await axios.get(`${host}/purchase/premiummembership`, { headers: { 'Authorization': token } });
 
 
     const options = {
         "key": response.data.key_id,
         "order_id": response.data.order.id,
         "handler": async function (response) {
-            token = await axios.post('http://localhost:7000/purchase/updatetransactionstatus', {
+            token = await axios.post(`${host}/purchase/updatetransactionstatus`, {
                 order_id: options.order_id,
                 payment_id: response.razorpay_payment_id,
             }, { headers: { "Authorization": token } })
 
             alert('TRANSACTION SUCCESSFULL');
             localStorage.setItem('token', token.data.token)
-            console.log('token is =====> ', token.data.token);
             displayPremium();
+            location.reload();
+
         }
     }
     const rzp = new Razorpay(options);
@@ -59,7 +62,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
     e.preventDefault();
 
     rzp.on('payment.failed', async function (response) {
-        await axios.post('http://localhost:7000/purchase/updatefailedstatus', { order_id: options.order_id }, { headers: { "Authorization": token } })
+        await axios.post(`${host}/purchase/updatefailedstatus`, { order_id: options.order_id }, { headers: { "Authorization": token } })
         alert('TRANSACTION FAILED');
     })
 
@@ -67,7 +70,9 @@ document.getElementById('rzp-button1').onclick = async function (e) {
 
 async function download() {
     try {
-        const response = await axios.get('http://localhost:7000/expense/download', { headers: { "Authorization": token } });
+        const downloadedDiv = document.getElementById('downloadedfiles');
+        const button = document.createElement('button');
+        const response = await axios.get(`${host}/expense/download`, { headers: { "Authorization": token } });
         const a = document.createElement('a');
         a.href = response.data.url;
         a.click();
@@ -80,8 +85,8 @@ async function download() {
 }
 
 async function displayPremium() {
-    // const findPremium = await axios.get('http://localhost:7000/user/get-user',{headers : {"Authorization" : token}})
-    console.log(isPremium, 'dis pre')
+    // const findPremium = await axios.get('http://51.21.2.30:7000//user/get-user',{headers : {"Authorization" : token}})
+    console.log(isPremium)
     if (isPremium) {
         const buyPremiumButton = document.getElementById('rzp-button1');
         buyPremiumButton.style.display = 'none';
@@ -94,7 +99,6 @@ async function displayPremium() {
         showLeaderboardButton.textContent = 'Show Leaderboard';
         showLeaderboardButton.addEventListener('click', getLeaderboard);
         document.getElementById('premium').appendChild(showLeaderboardButton);
-
         displayDownloads();
     }
 }
@@ -102,7 +106,7 @@ async function displayPremium() {
 async function getLeaderboard() {
     try {
         console.log(token);
-        const response = await axios.get('http://localhost:7000/premium/leaderboard', { headers: { 'Authorization': token } });
+        const response = await axios.get(`${host}/premium/leaderboard`, { headers: { 'Authorization': token } });
         const leaderBoardArray = response.data.leaderBoard;
         displayLeaderBoard(leaderBoardArray);
 
@@ -130,7 +134,7 @@ function displayLeaderBoard(leaderBoardArray) {
 async function displayDownloads() {
     try {
         if (isPremium) {
-            const response = await axios.get('http://localhost:7000/expense/downloadedexpense', { headers: { 'Authorization': token } })
+            const response = await axios.get(`${host}/expense/downloadedexpense`, { headers: { 'Authorization': token } })
             const downloadedDiv = document.getElementById('downloadedfiles');
             const downloadedFiles = response.data.downloadedFiles;
 
@@ -142,6 +146,7 @@ async function displayDownloads() {
 
 
             for (let i = 0; i < downloadedFiles.length; i++) {
+                console.log(downloadedFiles[i]);
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 const button = document.createElement('button')
@@ -222,7 +227,7 @@ function showPagination(data) {
 
 async function handlePageClick(page) {
     pageSize = localStorage.getItem('pagesize');
-    const response = await axios.get(`http://localhost:7000/expense/pagination/${pageSize}/?page=${page}`, { headers: { 'Authorization': token } })
+    const response = await axios.get(`${host}/expense/pagination/${pageSize}/?page=${page}`, { headers: { 'Authorization': token } })
     listExpenses(response.data.expenses);
     console.log(response.data.expenses.length);
     showPagination(response.data);
@@ -233,7 +238,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await displayPremium();
     const page = 1;
     try {
-        const response = await axios.get(`http://localhost:7000/expense/pagination/${pageSize}?page=${page}`, { headers: { 'Authorization': token } })
+        console.log(host, pageSize, page);
+        const response = await axios.get(`${host}/expense/pagination/${pageSize}?page=${page}`, { headers: { 'Authorization': token } })
         listExpenses(response.data.expenses);
         console.log(response.data.expenses.length);
         showPagination(response.data);

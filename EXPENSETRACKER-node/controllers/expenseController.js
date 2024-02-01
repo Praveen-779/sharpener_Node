@@ -80,7 +80,6 @@ exports.deleteExpense =  async (req,res,next) => {
 
 exports.getDownloadedExpense = async(req,res,next) => {
     try {
-        console.log(req.user.id);
         const response = await DownloadedExpense.findAll({where : {userId : req.user.id}});
         res.status(200).json({downloadedFiles : response});
     } catch(err) {

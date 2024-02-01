@@ -12,7 +12,7 @@
 </style>
 
 <body>
-    <form onsubmit="addExpense(event)" id="expenseForm" style="text-align: center;">
+    <form onsubmit="addExpense(event)" method="POST" id="expenseForm" style="text-align: center;">
         <label for="amount">Enter expense amount</label>
         <input type="number" name="amount" id="amount">
 
@@ -57,11 +57,8 @@
     <div id="downloadedfiles">
         
     </div>
-    
 
 </body>
-<script src="./expense.js"> 
-    
-</script>
+<script src="./expense.js"> </script>
 
 </html>

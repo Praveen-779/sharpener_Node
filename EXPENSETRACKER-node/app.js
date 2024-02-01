@@ -29,7 +29,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'),{
 
 app.use(cors());
 app.use(express.json());
-app.use(helmet());
+app.use( helmet({ contentSecurityPolicy: false }) );
 app.use(morgan('combined', {stream: accessLogStream}));
 
 app.use('/user', userRoutes);
@@ -37,6 +37,11 @@ app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password',forgetpasswordRoutes);
+
+app.use('/', (req, res) => {
+    const filePath = path.join(__dirname, 'views', `${req.url}`);
+    res.sendFile(filePath);
+});
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
@@ -49,7 +54,7 @@ Forgetpasswordrequest.belongsTo(User);
 
 User.hasMany(DownloadedExpense);
 DownloadedExpense.belongsTo(User);
-console.log(process.env.PORT)
+console.log('inside app.js')
 
 sequelize
     .sync()
